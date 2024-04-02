@@ -23,14 +23,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import uk.ac.tees.mad.w9617329.R
 import uk.ac.tees.mad.w9617329.components.LoaderAnimation
 import uk.ac.tees.mad.w9617329.navigations.NavigationDestination
-import uk.ac.tees.mad.w9617329.screens.explorescreen.ExploreDestination
 import uk.ac.tees.mad.w9617329.ui.theme.PrimaryRed
 
 
@@ -39,7 +35,7 @@ object SplashScreenDestination : NavigationDestination {
 }
 
 @Composable
-fun SplashScreen(navController: NavHostController) {
+fun SplashScreen(onFinish: () -> Unit) {
 
     val anim = remember {
         Animatable(0f)
@@ -54,7 +50,7 @@ fun SplashScreen(navController: NavHostController) {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(240.dp))
+            Spacer(modifier = Modifier.height(220.dp))
             LoaderAnimation(
                 modifier = Modifier
                     .size(200.dp),
@@ -92,9 +88,6 @@ fun SplashScreen(navController: NavHostController) {
     LaunchedEffect(key1 = true) {
         anim.animateTo(1f, animationSpec = tween(1500))
         delay(2000L)
-        launch(Dispatchers.Main) {
-            navController.popBackStack()
-            navController.navigate(ExploreDestination.routeName)
-        }
+        onFinish()
     }
 }

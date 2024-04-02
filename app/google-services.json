@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "144961999353",
+    "project_id": "blood-connect-6b4d0",
+    "storage_bucket": "blood-connect-6b4d0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144961999353:android:879ef9137b5431b5602d28",
+        "android_client_info": {
+          "package_name": "uk.ac.tees.mad.w9617329"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144961999353-jcb8q3iis62hln6gulk0mql4djhavi4d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "uk.ac.tees.mad.w9617329",
+            "certificate_hash": "50142d843a625db3db251955a702b560ad8b2392"
+          }
+        },
+        {
+          "client_id": "144961999353-l36sjr8iv7cclcmgjr62ujva4berruv7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqYA-9SiKAKyExe0dJIswgNGsPAYWnrPI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144961999353-l36sjr8iv7cclcmgjr62ujva4berruv7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

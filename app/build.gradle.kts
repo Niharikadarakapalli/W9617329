@@ -1,7 +1,20 @@
+import java.util.Properties
+
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("com.google.gms.google-services")
+    id("dagger.hilt.android.plugin")
+    id("com.google.devtools.ksp")
 }
+
+val propertyFile = rootProject.file("apiKey.properties")
+val apiKeyProperties = Properties()
+apiKeyProperties.load(
+    FileInputStream(propertyFile)
+)
 
 android {
     namespace = "uk.ac.tees.mad.w9617329"
@@ -18,6 +31,11 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        buildConfigField(
+            "String",
+            "AUTH_CLIENT_KEY",
+            apiKeyProperties.getProperty("AUTH_CLIENT_KEY")
+        )
     }
 
     buildTypes {
@@ -37,6 +55,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     composeOptions {
@@ -63,6 +82,19 @@ dependencies {
     implementation(libs.lottie.compose)
     //navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.compose.material:material-icons-extended:1.6.2")
+
+    implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.google.firebase:firebase-auth:22.3.1")
+    implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
+    implementation("com.google.firebase:firebase-firestore:24.10.3")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.10.3")
+
+    //Dagger - Hilt
+    implementation("com.google.dagger:hilt-android:2.47")
+    ksp("com.google.dagger:hilt-compiler:2.47")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
