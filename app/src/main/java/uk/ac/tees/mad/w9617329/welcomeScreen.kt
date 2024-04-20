@@ -43,7 +43,7 @@ class welcomeScreen: Fragment(R.layout.welcome_screen) {
                     } finally {
 
                         if (isUserLoggedIn()) {
-                            val intent = Intent(requireContext(), AuthenticationScreenActivity::class.java)
+                            val intent = Intent(requireContext(), HomeActivity2::class.java)
                             startActivity(intent)
                             activity?.finish()
                         } else {
