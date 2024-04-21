@@ -12,6 +12,11 @@
         android:theme="@style/Theme.BloodConnect"
         tools:targetApi="31">
         <activity
+            android:name=".ProfileEditorActivity"
+            android:exported="false"
+            android:label="@string/title_activity_profile_editor"
+            android:theme="@style/Theme.BloodConnect" />
+        <activity
             android:name=".HomeActivity2"
             android:exported="false"
             android:label="@string/title_activity_home2"

@@ -3,4 +3,5 @@
     <string name="title_activity_authentication_screen">AuthenticationScreenActivity</string>
     <string name="title_activity_create_account">CreateAccountActivity</string>
     <string name="title_activity_home2">HomeActivity2</string>
+    <string name="title_activity_profile_editor">ProfileEditorActivity</string>
 </resources>

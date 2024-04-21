@@ -143,6 +143,7 @@ class AuthenticationScreenActivity : ComponentActivity() {
                             contentDescription = "Password",
                             tint = Color.Red,
                             modifier = Modifier.size(16.dp)
+
                         )
                     },
                     colors = TextFieldDefaults.outlinedTextFieldColors(

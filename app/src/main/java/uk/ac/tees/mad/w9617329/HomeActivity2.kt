@@ -1,5 +1,6 @@
 package uk.ac.tees.mad.w9617329
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -195,11 +196,12 @@ class HomeActivity2 : ComponentActivity() {
             }
         }
 
-        ProfileScreen(user = donor, onEditProfileClick = {})
+        ProfileScreen(user = donor, onEditProfileClick = {},context)
     }
 
     @Composable
-    fun ProfileScreen(user: DonarModel, onEditProfileClick: () -> Unit) {
+    fun ProfileScreen(user: DonarModel, onEditProfileClick: () -> Unit,context: Context) {
+        val localContext = LocalContext.current
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -228,11 +230,17 @@ class HomeActivity2 : ComponentActivity() {
             Spacer(modifier = Modifier.height(16.dp))
             UserInfo(user = user)
             Spacer(modifier = Modifier.height(16.dp))
-            EditProfileButton(onClick = onEditProfileClick)
-            Spacer(modifier = Modifier.height(16.dp))
             EditProfileButton(onClick = {
-
-            })
+                val intent = Intent(context, ProfileEditorActivity::class.java)
+                localContext.startActivity(intent)
+            },"Manage Profile")
+            Spacer(modifier = Modifier.height(8.dp))
+            EditProfileButton(onClick = {
+                FirebaseAuth.getInstance().signOut()
+                val intent = Intent(context, AuthenticationScreenActivity::class.java)
+                localContext.startActivity(intent)
+                (context as? Activity)?.finish()
+            },"Logout")
         }
     }
 
@@ -255,7 +263,8 @@ class HomeActivity2 : ComponentActivity() {
                 modifier = Modifier
                     .size(120.dp)
                     .clip(CircleShape)
-                    .border(2.dp, Color.Red, CircleShape)
+                    .border(2.dp, Color.Red, CircleShape),
+                contentScale = ContentScale.Fit
             )
         }
     }
@@ -273,7 +282,7 @@ class HomeActivity2 : ComponentActivity() {
     }
 
     @Composable
-    fun EditProfileButton(onClick: () -> Unit) {
+    fun EditProfileButton(onClick: () -> Unit,text:String) {
         Button(
             onClick = onClick,
             modifier = Modifier
@@ -282,7 +291,7 @@ class HomeActivity2 : ComponentActivity() {
             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red),
             shape = RoundedCornerShape(12.dp)
         ) {
-            Text("Edit Profile", color = Color.White)
+            Text(text, color = Color.White)
         }
     }
 
