@@ -300,7 +300,7 @@ class CreateAccountActivity : ComponentActivity() {
             val userDoc = DonarModel(
                 name = name2,
                 phone = phone,
-                image_url = "https://firebasestorage.googleapis.com/v0/b/chefhub-77f55.appspot.com/o/profile_photo%2Fpexels-andrea-piacquadio-733872.jpg?alt=media&token=6f87efa2-dcf6-4b3c-bf54-ccc4690721d0",
+                image_url = "https://firebasestorage.googleapis.com/v0/b/blood-connect-6b4d0.appspot.com/o/profile.jpg?alt=media&token=9ff85cf7-078e-45f4-80d3-fd04fdd9fb5b",
                 bloodType = bloodType,
                 email = user.email.toString()
             )

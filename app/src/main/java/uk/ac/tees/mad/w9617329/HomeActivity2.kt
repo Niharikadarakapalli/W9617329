@@ -184,7 +184,7 @@ class HomeActivity2 : ComponentActivity() {
 
         LaunchedEffect(uid) {
             if (uid != null) {
-                FirebaseFirestore.getInstance().collection("donors").document(uid).get()
+                FirebaseFirestore.getInstance().collection("donars").document(uid).get()
                     .addOnSuccessListener { document ->
                         if (document.exists()) {
                             val donorData = document.toObject(DonarModel::class.java)
@@ -233,6 +233,7 @@ class HomeActivity2 : ComponentActivity() {
             EditProfileButton(onClick = {
                 val intent = Intent(context, ProfileEditorActivity::class.java)
                 localContext.startActivity(intent)
+                (context as? Activity)?.finish()
             },"Manage Profile")
             Spacer(modifier = Modifier.height(8.dp))
             EditProfileButton(onClick = {
@@ -264,7 +265,8 @@ class HomeActivity2 : ComponentActivity() {
                     .size(120.dp)
                     .clip(CircleShape)
                     .border(2.dp, Color.Red, CircleShape),
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.Crop
+
             )
         }
     }
