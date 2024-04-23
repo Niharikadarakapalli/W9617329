@@ -5,6 +5,9 @@ data class DonarModel(    val name: String,
                          val phone : String,
                          val image_url: String,
                          val bloodType : String,
-                         val email : String) {
-    constructor() : this("", "", "", "", "" )
+                         val email : String,
+                          val lat : Double,
+                            val long : Double,
+                            val isdonar : Boolean) {
+    constructor() : this("", "", "", "", "" ,0.0,0.0,false)
 }

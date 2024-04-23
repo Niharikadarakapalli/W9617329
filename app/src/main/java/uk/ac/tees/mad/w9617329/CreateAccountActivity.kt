@@ -302,7 +302,10 @@ class CreateAccountActivity : ComponentActivity() {
                 phone = phone,
                 image_url = "https://firebasestorage.googleapis.com/v0/b/blood-connect-6b4d0.appspot.com/o/profile.jpg?alt=media&token=9ff85cf7-078e-45f4-80d3-fd04fdd9fb5b",
                 bloodType = bloodType,
-                email = user.email.toString()
+                email = user.email.toString(),
+                lat = 0.0,
+                long = 0.0,
+                isdonar =  false
             )
             FirebaseFirestore.getInstance().collection("donars").document(uid).set(userDoc).addOnCompleteListener {
                 task ->

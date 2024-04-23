@@ -1,9 +1,12 @@
 package uk.ac.tees.mad.w9617329
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
@@ -31,6 +34,7 @@ import coil.size.Scale
 import coil.transform.RoundedCornersTransformation
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -53,11 +57,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
@@ -70,6 +78,9 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 class HomeActivity2 : ComponentActivity() {
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -83,6 +94,87 @@ class HomeActivity2 : ComponentActivity() {
                 }
             }
         }
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        val requestPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+                if (isGranted) {
+                    requestLocation()
+                } else {
+                    // Permission denied, handle accordingly
+                }
+            }
+
+        if (ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            requestLocation()
+        } else {
+            requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+
+    }
+
+    private fun requestLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location ->
+                // Got last known location. In some rare situations this can be null.
+                if (location != null) {
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+                    val uid = FirebaseAuth.getInstance().currentUser?.uid
+                    if(uid != null){
+                        FirebaseFirestore.getInstance().collection("donars").document(uid).get()
+                            .addOnSuccessListener { document ->
+                                if (document.exists()) {
+                                    val userData = document.toObject(DonarModel::class.java)
+                                    if (userData != null) {
+                                        // Update the user data
+                                        val user = DonarModel(
+                                            userData.name,
+                                            userData.phone,
+                                            userData.image_url,
+                                            userData.bloodType,
+                                            userData.email,
+                                            latitude,
+                                            longitude,
+                                            userData.isdonar
+                                        )
+                                        FirebaseFirestore.getInstance().collection("donars").document(uid).set(user)
+                                    }
+                                } else {
+                                    // The document does not exist
+                                }
+                            }
+
+
+                    }
+
+                }
+            }
+            .addOnFailureListener { e ->
+                // Handle failure
+            }
     }
 
     @Composable
@@ -177,7 +269,10 @@ class HomeActivity2 : ComponentActivity() {
             email = "john.doe@example.com",
             phone = "+1 123-456-7890",
             image_url = "https://firebasestorage.googleapis.com/v0/b/blood-connect-6b4d0.appspot.com/o/profile.jpg?alt=media&token=9ff85cf7-078e-45f4-80d3-fd04fdd9fb5b",
-            bloodType = "A+"
+            bloodType = "A+",
+            lat = 0.0,
+            long = 0.0,
+            isdonar = false
         ))}
 
         val uid = FirebaseAuth.getInstance().currentUser?.uid
@@ -208,6 +303,7 @@ class HomeActivity2 : ComponentActivity() {
                 .padding(16.dp)
                 .background(Color.White)
         ) {
+            var is_donar = user.isdonar
             TopAppBar(
                 title = {
                     Text(
@@ -229,13 +325,44 @@ class HomeActivity2 : ComponentActivity() {
             ProfilePicture(user = user)
             Spacer(modifier = Modifier.height(16.dp))
             UserInfo(user = user)
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             EditProfileButton(onClick = {
                 val intent = Intent(context, ProfileEditorActivity::class.java)
                 localContext.startActivity(intent)
                 (context as? Activity)?.finish()
             },"Manage Profile")
-            Spacer(modifier = Modifier.height(8.dp))
+            if(is_donar == false){
+                EditProfileButton(onClick = {
+                    val uid = FirebaseAuth.getInstance().currentUser?.uid
+                    if (uid != null) {
+                        FirebaseFirestore.getInstance().collection("donars").document(uid).get()
+                            .addOnSuccessListener { document ->
+                                if (document.exists()) {
+                                    val userData = document.toObject(DonarModel::class.java)
+                                    if (userData != null) {
+                                        // Update the user data
+                                        val userrr = DonarModel(
+                                            userData.name,
+                                            userData.phone,
+                                            userData.image_url,
+                                            userData.bloodType,
+                                            userData.email,
+                                            userData.lat,
+                                            userData.long,
+                                            true
+                                        )
+                                        is_donar = true
+                                        FirebaseFirestore.getInstance().collection("donars").document(uid).set(userrr)
+                                        Toast.makeText(this@HomeActivity2,"Now, You are a Donar",Toast.LENGTH_SHORT).show()
+                                    }
+                                } else {
+                                    // The document does not exist
+                                }
+                            }
+                    }
+
+                },"Be a Donar")
+            }
             EditProfileButton(onClick = {
                 FirebaseAuth.getInstance().signOut()
                 val intent = Intent(context, AuthenticationScreenActivity::class.java)
@@ -289,7 +416,7 @@ class HomeActivity2 : ComponentActivity() {
             onClick = onClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp),
+                .padding(vertical = 4.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red),
             shape = RoundedCornerShape(12.dp)
         ) {

@@ -182,7 +182,7 @@ class ProfileEditorActivity : ComponentActivity() {
             Spacer(modifier = Modifier.height(16.dp))
             SaveButton {
                 val uid = FirebaseAuth.getInstance().currentUser?.uid
-                val userData = DonarModel(editedUser.name,editedUser.phone,editedUser.image_url,editedUser.bloodType,editedUser.email)
+                val userData = DonarModel(editedUser.name,editedUser.phone,editedUser.image_url,editedUser.bloodType,editedUser.email,editedUser.lat,editedUser.long,editedUser.isdonar)
                 if (uid != null) {
                     FirebaseFirestore.getInstance().collection("donars").document(uid).set(userData).addOnCompleteListener {
                         val intent = Intent(this@ProfileEditorActivity, HomeActivity2::class.java)
@@ -373,7 +373,10 @@ class ProfileEditorActivity : ComponentActivity() {
                                                 userData.phone,
                                                 downloadUrl,
                                                 userData.bloodType,
-                                                userData.email
+                                                userData.email,
+                                                userData.lat,
+                                                userData.long,
+                                                userData.isdonar
                                             )
                                             FirebaseFirestore.getInstance().collection("donars").document(uid).set(user)
                                         }
