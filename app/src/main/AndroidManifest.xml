@@ -16,6 +16,11 @@
         android:theme="@style/Theme.BloodConnect"
         tools:targetApi="31">
         <activity
+            android:name=".DonarDetailsScreen"
+            android:exported="false"
+            android:label="@string/title_activity_donar_details_screen"
+            android:theme="@style/Theme.BloodConnect" />
+        <activity
             android:name=".ProfileEditorActivity"
             android:exported="false"
             android:label="@string/title_activity_profile_editor"

@@ -53,7 +53,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -249,7 +252,7 @@ class HomeActivity2 : ComponentActivity() {
         NavHost(navController = navController, startDestination = NavController.Home.route) {
 
             composable(NavController.Home.route) {
-
+                Home(this@HomeActivity2)
             }
 
             composable(NavController.Notifications.route) {
@@ -262,6 +265,149 @@ class HomeActivity2 : ComponentActivity() {
 
         }
     }
+
+    @Composable
+    fun Home(context: Context){
+        var donars by remember { mutableStateOf<List<DonarModel>>(emptyList()) }
+        LaunchedEffect(true){
+            FirebaseFirestore.getInstance().collection("donars").get().
+            addOnCompleteListener { task ->
+                if (task.isSuccessful){
+                    val donar_list = mutableListOf<DonarModel>()
+                    val result = task.result
+                    result?.let { querySnapshot ->
+
+                        for (document in querySnapshot) {
+                            val name = document.getString("name") ?: ""
+                            val imageUrl = document.getString("image_url") ?: ""
+                            val email = document.getString("email") ?: ""
+                            val bloodType = document.getString("bloodType") ?: ""
+                            val isdonar = document.getBoolean("isdonar") ?: false
+                            val lat = document.getDouble("lat") ?: 0.0
+                            val long = document.getDouble("long") ?: 0.0
+                            val phone = document.getString("phone")?: ""
+
+                            val wearableModel =
+                                DonarModel(name, phone , imageUrl, bloodType,email.toString(),lat.toDouble(),long.toDouble(),isdonar)
+                            if (isdonar == true){
+                                donar_list.add(wearableModel)
+                            }
+                        }
+
+                    }
+                    donars = donar_list
+
+                }else{
+
+                }
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+        ) {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Donor's List",
+                        style = MaterialTheme.typography.h5,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Red
+                    )
+                },
+                backgroundColor = Color.White,
+                elevation = 0.dp,
+                modifier = Modifier.padding(16.dp)
+            )
+
+            LazyColumn(
+
+            ) {
+                items(donars) { rowItems ->
+                    DonorCard(rowItems, context)
+                }
+
+                // Add some spacing between the LazyColumn and the TotalAmountButton
+                item {
+                    Spacer(modifier = Modifier.height(100.dp))
+                }
+            }
+
+        }
+
+
+    }
+
+
+    @Composable
+    fun DonorCard(donar: DonarModel, context: Context) {
+        val localContext = LocalContext.current
+        Card(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .height(90.dp)
+                .clickable {
+                    val intent = Intent(context, DonarDetailsScreen::class.java)
+                    intent.putExtra("image_url", donar.image_url)
+                    intent.putExtra("name", donar.name)
+                    intent.putExtra("email", donar.email)
+                    intent.putExtra("bloodType", donar.bloodType)
+                    intent.putExtra("lat", donar.lat)
+                    intent.putExtra("long", donar.long)
+                    intent.putExtra("phone", donar.phone)
+                    localContext.startActivity(intent)
+                },
+            elevation = 2.dp,
+            border = BorderStroke(1.dp, Color.LightGray)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = rememberImagePainter(donar.image_url),
+                    contentDescription = "Donor Image",
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
+                        .border(2.dp, Color.Red, CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Column {
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(color = Color.Black, fontWeight = FontWeight.Bold)) {
+                                append("Name: ")
+                            }
+                            withStyle(style = SpanStyle(color = Color.Red, fontWeight = FontWeight.Bold)) {
+                                append(donar.name)
+                            }
+                        },
+                        fontSize = 18.sp
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(color = Color.Black, fontWeight = FontWeight.Bold)) {
+                                append("Blood Group: ")
+                            }
+                            withStyle(style = SpanStyle(color = Color.Red, fontWeight = FontWeight.Bold)) {
+                                append(donar.bloodType)
+                            }
+                        },
+                        fontSize = 18.sp
+                    )
+                }
+            }
+        }
+    }
+
     @Composable
     fun profileInitializer(context: Context){
         var donor by remember { mutableStateOf(DonarModel(
