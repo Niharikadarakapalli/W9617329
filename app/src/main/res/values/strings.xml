@@ -5,4 +5,5 @@
     <string name="title_activity_home2">HomeActivity2</string>
     <string name="title_activity_profile_editor">ProfileEditorActivity</string>
     <string name="title_activity_donar_details_screen">DonarDetailsScreen</string>
+    <string name="title_activity_locate_donar">LocateDonarActivity</string>
 </resources>

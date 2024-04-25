@@ -187,7 +187,6 @@ class HomeActivity2 : ComponentActivity() {
 
         val items = listOf(
             NavController.Home,
-            NavController.Notifications,
             NavController.Account
         )
 //    val profilePicture: Painter = painterResource(id = R.drawable.profile_picture)
@@ -255,9 +254,6 @@ class HomeActivity2 : ComponentActivity() {
                 Home(this@HomeActivity2)
             }
 
-            composable(NavController.Notifications.route) {
-
-            }
 
             composable(NavController.Account.route) {
                 profileInitializer(this@HomeActivity2)

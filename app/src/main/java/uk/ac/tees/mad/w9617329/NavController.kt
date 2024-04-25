@@ -12,8 +12,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 sealed class NavController(val route: String, val label: String, val icons: ImageVector) {
 
     object Home : NavController("home", "Home", Icons.Default.Home)
-    object Notifications :
-        NavController("notifications", "Locate", Icons.Default.AddLocation)
 
     object Account: NavController("account","Account", Icons.Default.AccountCircle)
 

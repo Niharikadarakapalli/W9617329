@@ -97,7 +97,11 @@ class DonarDetailsScreen : ComponentActivity() {
             UserInfo(user = user)
             Spacer(modifier = Modifier.height(8.dp))
             EditProfileButton(onClick = {
-
+                val intent = Intent(context, LocateDonarActivity::class.java)
+                intent.putExtra("name", user.name)
+                intent.putExtra("lat", user.lat)
+                intent.putExtra("long", user.long)
+                startActivity(intent)
             },"Locate Donar")
 
         }

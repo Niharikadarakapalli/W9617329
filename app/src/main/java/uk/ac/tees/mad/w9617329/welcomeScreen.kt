@@ -41,7 +41,6 @@ class welcomeScreen: Fragment(R.layout.welcome_screen) {
                         sleep(1000)
                     } catch (e: Exception) {
                     } finally {
-
                         if (isUserLoggedIn()) {
                             val intent = Intent(requireContext(), HomeActivity2::class.java)
                             startActivity(intent)
@@ -51,7 +50,6 @@ class welcomeScreen: Fragment(R.layout.welcome_screen) {
                             startActivity(intent)
                             activity?.finish()
                         }
-
                     }
                 }
             }.start()
@@ -63,45 +61,40 @@ class welcomeScreen: Fragment(R.layout.welcome_screen) {
         return currentUser != null
     }
 
-
-
-
     @Composable
     fun WelcomeScreen() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(Color(0xFFFF0000), Color.White)
-                    )
+                    color = Color.White
                 ),
             contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier
+                    .padding(32.dp)  // Increased padding for a better layout
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.blooddonation), // Replace with your logo
+                    painter = painterResource(id = R.drawable.blooddonation), // Replace with your logo resource
                     contentDescription = "Logo",
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.Fit,
                     modifier = Modifier
-                        .size(100.dp) // Adjust the size as needed
+                        .size(150.dp)  // Increased size for better visibility
                         .padding(16.dp)
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))  // Adjusted spacing for better visual separation
 
                 Text(
                     text = "Welcome to Blood Donate App",
-                    style = MaterialTheme.typography.h5,
+                    style = MaterialTheme.typography.h6,
                     color = Color(android.graphics.Color.parseColor("#670E10"))
                 )
             }
         }
     }
-
-
 }
